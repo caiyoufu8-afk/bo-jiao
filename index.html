@@ -10,7 +10,13 @@ body{background:#2c170f;color:#fff9e8;text-align:center;padding:35px 15px}
 h1{color:#ffd266;font-size:30px;letter-spacing:3px}
 .tip{margin:12px 0 40px;opacity:0.9}
 .cup-wrap{display:flex;gap:45px;justify-content:center;margin:50px 0;height:170px;align-items:center}
-.cup{width:105px;height:140px;background:#e7c48b;border:4px solid #8a5627;border-radius:13px;font-size:42px;color:#241309;display:grid;place-items:center}
+/* 聖杯容器基底 */
+.cup{width:105px;height:140px;border-radius:50% 0 0 50px;position:relative;overflow:hidden;box-shadow:0 0 12px #90222266}
+/* 反面：帶白色弧線（你提供圖一） */
+.cup-fan{background:#e62233}
+.cup-fan::after{content:"";position:absolute;left:12%;top:18%;width:65%;height:42%;border-radius:100px;background:#fff;clip-path:ellipse()}
+/* 正面：純紅平面無白線（你提供圖二） */
+.cup-zheng{background:#e62233}
 .shake{animation:shake 0.6s}
 @keyframes shake{
   25%{transform:translateY(-20px) rotate(-16deg)}
@@ -27,22 +33,22 @@ h1{color:#ffd266;font-size:30px;letter-spacing:3px}
 </style>
 </head>
 <body>
-<h1>線上擲聖杯</h1>
-<p class="tip">心中默念所求，再點擊擲筊<br>一正一反＝聖筊｜兩反＝陰筊｜兩正＝笑筊</p>
+<h1>遊巡王爺｜線上擲聖杯</h1>
+<p class="tip">心中默念向遊巡王爺所求之事，再點擊擲筊<br>一正一反＝聖筊｜兩反＝陰筊｜兩正＝笑筊</p>
 
 <div class="cup-wrap">
-  <div id="c1" class="cup">正</div>
-  <div id="c2" class="cup">正</div>
+  <div id="c1" class="cup cup-zheng"></div>
+  <div id="c2" class="cup cup-zheng"></div>
 </div>
 
 <div class="btns">
-  <button id="throw">擲聖杯</button>
+  <button id="throw">擲聖杯問遊巡王爺</button>
   <button id="reset">重新重置</button>
 </div>
 
 <div class="result">
-  <div class="res-title">等候擲筊</div>
-  <div class="res-desc">點按按鈕開始問事</div>
+  <div class="res-title">等候向遊巡王爺擲筊</div>
+  <div class="res-desc">點按按鈕，請遊巡王爺明示吉凶</div>
   <div class="count"></div>
 </div>
 
@@ -51,11 +57,12 @@ let c1=document.getElementById('c1'),c2=document.getElementById('c2');
 let btnThrow=document.getElementById('throw'),btnReset=document.getElementById('reset');
 let title=document.querySelector('.res-title'),desc=document.querySelector('.res-desc'),countText=document.querySelector('.count');
 let num=0;
+// 0=反面(圖一帶白線 cup-fan)，1=正面(圖二純紅 cup-zheng)
 function randomSide(){return Math.floor(Math.random()*2)}
 function getJiao(a,b){
-  if(a!==b)return {name:"聖筊",text:"神明應允，心中所求可行，可安心執行"}
-  else if(a===0&&b===0)return {name:"陰筊",text:"神明不允，此事不宜進行，建議暫緩、換方式詢問"}
-  else return {name:"笑筊",text:"心意雜亂、問題模糊，請平靜心神重新問事"}
+  if(a!==b)return {name:"聖筊",text:"遊巡王爺應允，心中所求可行，可安心執行"}
+  else if(a===0&&b===0)return {name:"陰筊",text:"遊巡王爺不允，此事不宜進行，建議暫緩、換方式再稟問"}
+  else return {name:"笑筊",text:"心意雜亂、稟述不清，請平靜心神重新向王爺問事"}
 }
 function throwCup(){
   btnThrow.disabled=true;
@@ -63,17 +70,23 @@ function throwCup(){
   c1.classList.add('shake');c2.classList.add('shake');
   setTimeout(()=>{
     let s1=randomSide(),s2=randomSide();
-    c1.innerText=s1?'正':'反';c2.innerText=s2?'正':'反';
+    // 切換正反面樣式
+    c1.className = s1 ? "cup cup-zheng" : "cup cup-fan";
+    c2.className = s2 ? "cup cup-zheng" : "cup cup-fan";
     let res=getJiao(s1,s2);
     title.innerText=res.name;desc.innerText=res.text;
-    countText.innerText=`累計擲筊次數：${num}`;
+    countText.innerText=`累計向遊巡王爺擲筊次數：${num}`;
     c1.classList.remove('shake');c2.classList.remove('shake');
     btnThrow.disabled=false;
   },650)
 }
 function resetAll(){
-  num=0;c1.innerText='正';c2.innerText='正';
-  title.innerText='等候擲筊';desc.innerText='點按按鈕開始問事';countText.innerText='';
+  num=0;
+  c1.className="cup cup-zheng";
+  c2.className="cup cup-zheng";
+  title.innerText='等候向遊巡王爺擲筊';
+  desc.innerText='點按按鈕，請遊巡王爺明示吉凶';
+  countText.innerText='';
 }
 btnThrow.onclick=throwCup;
 btnReset.onclick=resetAll;
