@@ -5,49 +5,78 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>遊巡王爺｜線上擲聖杯</title>
 <style>
-*{margin:0;padding:0;font-family:標楷體,微軟正黑體}
-body{background:#2c170f;color:#fff9e8;text-align:center;padding:35px 15px}
-h1{color:#ffd266;font-size:30px;letter-spacing:3px}
-.tip{margin:12px 0 40px;opacity:0.9}
+*{
+  margin:0;
+  padding:0;
+  font-family:標楷體,微軟正黑體;
+  box-sizing:border-box;
+}
+body{
+  background:#2c170f;
+  color:#fff9e8;
+  text-align:center;
+  padding:35px 15px;
+}
+h1{
+  color:#ffd266;
+  font-size:30px;
+  letter-spacing:3px;
+}
+.tip{
+  margin:12px 0 40px;
+  opacity:0.9;
+  line-height:1.6;
+}
 .cup-wrap{
   display:flex;
-  gap:45px;
+  gap:30px;
   justify-content:center;
   margin:50px 0;
-  height:170px;
+  height:180px;
   align-items:center;
   perspective:900px;
 }
-/* 【核心：筊杯形狀完全對應你的圖片】 */
+/* 筊杯基底：左右對稱半月形，完全匹配你的圖輪廓 */
 .cup{
-  width:105px;
-  height:140px;
-  /* 左側大弧形、右側垂直直邊，1:1還原圖片半月輪廓 */
-  border-radius:70px 0 0 70px;
+  width:130px;
+  height:130px;
   position:relative;
-  overflow:hidden;
-  background:#e62233;
   transform-origin:center center;
 }
-/* 陰面 = 第一張圖：帶左上白色月牙、外層柔光暈 */
-.cup-yin{
+.cup-left{
+  border-radius:0 70px 70px 0;
+  background:#e62233;
+}
+.cup-right{
+  border-radius:70px 0 0 70px;
+  background:#e62233;
+}
+/* 陽面（笑杯專用：無月牙、單側陰影 對應圖一） */
+.yang{
+  box-shadow:14px 0 16px -4px #9118248c;
+}
+/* 陰面（陰杯專用：帶白色月牙、外發柔光 對應圖二） */
+.yin{
   box-shadow:0 0 14px #e622337f;
 }
-.cup-yin::after{
+.yin::after{
   content:"";
   position:absolute;
-  left:14%;
-  top:16%;
   width:62%;
   height:38%;
   border-radius:100px;
   background:#ffffff;
   clip-path:ellipse();
+}
+.cup-left.yin::after{
+  left:16%;
+  top:18%;
   transform:rotate(-12deg);
 }
-/* 陽面 = 第二張圖：純紅無月牙、右側立體陰影 */
-.cup-yang{
-  box-shadow:16px 0 16px -6px #9015228c;
+.cup-right.yin::after{
+  right:16%;
+  top:18%;
+  transform:rotate(12deg);
 }
 /* 3D翻轉拋擲動畫 */
 .throw-animate{
@@ -59,6 +88,9 @@ h1{color:#ffd266;font-size:30px;letter-spacing:3px}
   50%{transform:translateY(14px) rotateY(-55deg) rotate(-10deg)}
   75%{transform:translateY(-22px) rotateY(42deg) rotate(7deg)}
   100%{transform:translateY(0) rotateY(0deg)}
+}
+.btns{
+  margin-top:30px;
 }
 .btns button{
   padding:13px 34px;
@@ -99,6 +131,25 @@ h1{color:#ffd266;font-size:30px;letter-spacing:3px}
   margin-top:14px;
   color:#ffd266;
 }
+/* 手機自適應 */
+@media(max-width:480px){
+  .cup-wrap{
+    gap:20px;
+    height:150px;
+  }
+  .cup{
+    width:100px;
+    height:100px;
+  }
+  h1{
+    font-size:24px;
+  }
+  .btns button{
+    margin:8px;
+    padding:12px 24px;
+    font-size:16px;
+  }
+}
 </style>
 </head>
 <body>
@@ -106,8 +157,8 @@ h1{color:#ffd266;font-size:30px;letter-spacing:3px}
 <p class="tip">心中默念向遊巡王爺所求之事，再點擊擲筊<br>一陰一陽＝聖筊｜兩陽＝笑筊｜兩陰＝陰筊</p>
 
 <div class="cup-wrap">
-  <div id="cup1" class="cup cup-yang"></div>
-  <div id="cup2" class="cup cup-yang"></div>
+  <div id="cup1" class="cup cup-left yang"></div>
+  <div id="cup2" class="cup cup-right yang"></div>
 </div>
 
 <div class="btns">
@@ -131,46 +182,55 @@ const resText = document.querySelector('.res-text');
 const countText = document.querySelector('.count-text');
 let throwTotal = 0;
 
-// 隨機規則：0=陰面(月牙圖) 1=陽面(純紅圖)
+// 0=陰面(帶月牙) 1=陽面(無月牙)
 function randomSide(){
   return Math.floor(Math.random() * 2);
 }
 
-// 三種筊對應遊巡王爺解文
+// 三種筊判定規則
 function getJiaoResult(a,b){
   if(a !== b){
     return {
       name:"聖筊",
       desc:"遊巡王爺應允，心中所求可行，可安心執行計畫"
-    }
+    };
   }else if(a === 1 && b === 1){
     return {
       name:"笑筊",
       desc:"心意雜亂、稟述不清，請平靜心神，重新向遊巡王爺問事"
-    }
+    };
   }else{
     return {
       name:"陰筊",
       desc:"遊巡王爺不允，此事不宜進行，建議暫緩、換方式再稟問"
-    }
+    };
   }
 }
 
-// 擲杯邏輯
+// 更新左右筊杯樣式
+function setCupStyle(el, side, dirClass){
+  el.className = "cup " + dirClass;
+  if(side === 1){
+    el.classList.add("yang");
+  }else{
+    el.classList.add("yin");
+  }
+}
+
+// 擲杯動作
 function doThrow(){
   throwBtn.disabled = true;
-  throwTotal ++;
+  throwTotal++;
   cup1.classList.add('throw-animate');
   cup2.classList.add('throw-animate');
 
   setTimeout(()=>{
     let s1 = randomSide();
     let s2 = randomSide();
-    // 切換陰/陽樣式對應你的兩張圖
-    cup1.className = s1 === 1 ? "cup cup-yang" : "cup cup-yin";
-    cup2.className = s2 === 1 ? "cup cup-yang" : "cup cup-yin";
+    setCupStyle(cup1, s1, "cup-left");
+    setCupStyle(cup2, s2, "cup-right");
 
-    let jiao = getJiaoResult(s1,s2);
+    let jiao = getJiaoResult(s1, s2);
     resTitle.innerText = jiao.name;
     resText.innerText = jiao.desc;
     countText.innerText = `累計向遊巡王爺擲筊次數：${throwTotal}`;
@@ -178,14 +238,14 @@ function doThrow(){
     cup1.classList.remove('throw-animate');
     cup2.classList.remove('throw-animate');
     throwBtn.disabled = false;
-  },700)
+  },700);
 }
 
 // 重置頁面
 function resetAll(){
   throwTotal = 0;
-  cup1.className = "cup cup-yang";
-  cup2.className = "cup cup-yang";
+  setCupStyle(cup1, 1, "cup-left");
+  setCupStyle(cup2, 1, "cup-right");
   resTitle.innerText = "等候向遊巡王爺擲筊";
   resText.innerText = "點按按鈕，請遊巡王爺明示吉凶";
   countText.innerText = "";
