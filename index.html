@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>線上擲聖杯｜遊巡王爺</title>
+<title>遊巡王爺｜線上擲聖杯</title>
 <style>
 *{margin:0;padding:0;font-family:標楷體,微軟正黑體}
 body{background:#2c170f;color:#fff9e8;text-align:center;padding:35px 15px}
 h1{color:#ffd266;font-size:30px;letter-spacing:3px}
 .tip{margin:12px 0 40px;opacity:0.9}
-.cup-wrap{display:flex;gap:45px;justify-content:center;margin:50px 0;height:170px;align-items:center}
-/* 聖杯基礎外形 統一尺寸弧度 */
+.cup-wrap{display:flex;gap:45px;justify-content:center;margin:50px 0;height:170px;align-items:center;perspective:800px}
+/* 聖杯統一基底，尺寸弧度完全一致 */
 .cup{
   width:105px;
   height:140px;
@@ -20,7 +20,7 @@ h1{color:#ffd266;font-size:30px;letter-spacing:3px}
   background:#e62233;
   transform-origin:center center;
 }
-/* 反面：對應第一張圖 帶左上白色月牙弧線+外柔光 */
+/* 反面：對應第一張圖 左側白色月牙+外發柔光 */
 .cup-fan{
   box-shadow:0 0 14px #e6223380;
 }
@@ -36,21 +36,20 @@ h1{color:#ffd266;font-size:30px;letter-spacing:3px}
   clip-path:ellipse();
   transform:rotate(-12deg);
 }
-/* 正面：對應第二張圖 無月牙、右側濃陰影 */
+/* 正面：對應第二張圖 無月牙、右側立體陰影 */
 .cup-zheng{
   box-shadow:16px 0 16px -6px #90152290;
 }
-/* 擲杯翻轉旋轉動畫 */
+/* 模仿 piliapp 立體翻轉拋擲動畫 */
 .shake{
-  animation:rotateFlip 0.6s ease-out;
+  animation:throwFlip 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
 }
-@keyframes rotateFlip{
-  0%{transform:rotateY(0deg) rotate(0deg)}
-  20%{transform:rotateY(60deg) rotate(10deg)}
-  40%{transform:rotateY(-40deg) rotate(-8deg)}
-  60%{transform:rotateY(50deg) rotate(6deg)}
-  80%{transform:rotateY(-25deg) rotate(-4deg)}
-  100%{transform:rotateY(0deg) rotate(0deg)}
+@keyframes throwFlip{
+  0%{transform:translateY(0) rotateY(0deg) rotate(0deg)}
+  25%{transform:translateY(-35px) rotateY(70deg) rotate(12deg)}
+  50%{transform:translateY(15px) rotateY(-50deg) rotate(-10deg)}
+  75%{transform:translateY(-20px) rotateY(40deg) rotate(7deg)}
+  100%{transform:translateY(0) rotateY(0deg) rotate(0deg)}
 }
 .btns button{
   padding:13px 34px;
@@ -59,16 +58,19 @@ h1{color:#ffd266;font-size:30px;letter-spacing:3px}
   border:none;
   border-radius:9px;
   cursor:pointer;
+  transition:0.2s;
 }
 #throw{
   background:#d38f1f;
   color:#1a0e05;
   font-weight:bold;
 }
+#throw:active{transform:scale(0.96)}
 #reset{
   background:#6b341d;
   color:#fff;
 }
+#reset:active{transform:scale(0.96)}
 .result{
   margin-top:35px;
   padding:24px;
@@ -115,7 +117,7 @@ let c1=document.getElementById('c1'),c2=document.getElementById('c2');
 let btnThrow=document.getElementById('throw'),btnReset=document.getElementById('reset');
 let title=document.querySelector('.res-title'),desc=document.querySelector('.res-desc'),countText=document.querySelector('.count');
 let num=0;
-// 0=反面(圖一 月牙款) 1=正面(圖二 純紅陰影款)
+// 0=反面(圖一月牙款) 1=正面(圖二純紅陰影款)
 function randomSide(){
   return Math.floor(Math.random()*2);
 }
@@ -144,7 +146,6 @@ function throwCup(){
   c2.classList.add('shake');
   setTimeout(()=>{
     let s1=randomSide(),s2=randomSide();
-    // 切換正反面樣式
     c1.className = s1 ? "cup cup-zheng" : "cup cup-fan";
     c2.className = s2 ? "cup cup-zheng" : "cup cup-fan";
     let res=getJiao(s1,s2);
@@ -154,7 +155,7 @@ function throwCup(){
     c1.classList.remove('shake');
     c2.classList.remove('shake');
     btnThrow.disabled=false;
-  },650);
+  },700);
 }
 function resetAll(){
   num=0;
