@@ -11,14 +11,12 @@
   font-family:標楷體,微軟正黑體;
   box-sizing:border-box;
 }
-
 body{
   background:#2c170f;
   color:#fff9e8;
   text-align:center;
   padding:35px 15px;
 }
-
 h1{
   color:#ffd266;
   font-size:36px;
@@ -26,14 +24,12 @@ h1{
   text-shadow:0 0 4px #b8882277;
   margin-bottom:16px;
 }
-
 .tip{
   font-size:18px;
   opacity:0.9;
   line-height:1.8;
   margin-bottom:60px;
 }
-
 .cup-wrap{
   display:flex;
   gap:40px;
@@ -43,25 +39,20 @@ h1{
   align-items:center;
   perspective:900px;
 }
-
 .cup{
   width:140px;
   height:140px;
-  position:relative;
   transform-origin:center center;
 }
-
 .cup img{
   width:100%;
   height:100%;
   object-fit:contain;
   display:block;
 }
-
 .throw-animate{
   animation:cupFlip 0.7s cubic-bezier(0.26,0.46,0.44,0.95);
 }
-
 @keyframes cupFlip{
   0%{transform:translateY(0) rotateY(0deg)}
   25%{transform:translateY(-36px) rotateY(75deg) rotate(12deg)}
@@ -69,11 +60,9 @@ h1{
   75%{transform:translateY(-22px) rotateY(42deg) rotate(7deg)}
   100%{transform:translateY(0) rotateY(0deg)}
 }
-
 .btns{
   margin:70px 0 40px;
 }
-
 .btns button{
   padding:18px 50px;
   font-size:20px;
@@ -83,88 +72,55 @@ h1{
   cursor:pointer;
   transition:0.2s ease;
 }
-
 #throwBtn{
   background:#d38f1f;
   color:#1a0e05;
   font-weight:bold;
 }
-
-#throwBtn:active{
-  transform:scale(0.96);
-}
-
+#throwBtn:active{transform:scale(0.96)}
 #resetBtn{
   background:#6b341d;
   color:#fff;
 }
-
-#resetBtn:active{
-  transform:scale(0.96);
-}
-
+#resetBtn:active{transform:scale(0.96)}
 .divider{
   width:100%;
   height:1px;
   background:#ffd67044;
   margin-bottom:40px;
 }
-
 .res-title{
   font-size:32px;
   color:#ffdd86;
   letter-spacing:4px;
 }
-
 .res-text{
   font-size:18px;
   margin:12px 0;
 }
-
 .count-text{
   margin-top:14px;
   color:#ffd266;
   font-size:17px;
 }
-
 @media(max-width:480px){
-  h1{
-    font-size:26px;
-    letter-spacing:3px;
-  }
-
-  .cup{
-    width:110px;
-    height:110px;
-  }
-
-  .btns button{
-    padding:14px 32px;
-    font-size:17px;
-    margin:8px;
-  }
-
-  .res-title{
-    font-size:24px;
-  }
+  h1{font-size:26px;letter-spacing:3px}
+  .cup{width:110px;height:110px}
+  .btns button{padding:14px 32px;font-size:17px;margin:8px}
+  .res-title{font-size:24px}
 }
 </style>
 </head>
 <body>
-
 <h1>遊巡王爺 | 線上擲聖杯</h1>
-
-<p class="tip">
-  心中默念向遊巡王爺所求之事，再點擊擲筊<br>
-  一陰一陽＝聖筊｜兩陽＝笑筊｜兩陰＝陰筊
-</p>
+<p class="tip">心中默念向遊巡王爺所求之事，再點擊擲筊<br>一陰一陽＝聖筊｜兩陽＝笑筊｜兩陰＝陰筊</p>
 
 <div class="cup-wrap">
-  <div id="cup1" class="cup">
-    <img id="cup1Img" src="xiao.png" alt="笑杯">
+  <div id="cupLeftBox" class="cup">
+    <img id="cupLeftImg" src="49478012378275330_user_upload_img_2" alt="左邊正杯">
   </div>
-  <div id="cup2" class="cup">
-    <img id="cup2Img" src="xiao.png" alt="笑杯">
+  <div id="cupRightBox" class="cup">
+    <img id="cupRightImg" src="49478012378275330_user_upload_img_4" alt="右邊正杯">
   </div>
 </div>
 
@@ -182,112 +138,82 @@ h1{
 </div>
 
 <script>
-const cup1 = document.getElementById('cup1');
-const cup2 = document.getElementById('cup2');
-const cup1Img = document.getElementById('cup1Img');
-const cup2Img = document.getElementById('cup2Img');
+const cupLeftBox = document.getElementById('cupLeftBox');
+const cupRightBox = document.getElementById('cupRightBox');
+const cupLeftImg = document.getElementById('cupLeftImg');
+const cupRightImg = document.getElementById('cupRightImg');
 const throwBtn = document.getElementById('throwBtn');
 const resetBtn = document.getElementById('resetBtn');
 const resTitle = document.querySelector('.res-title');
 const resText = document.querySelector('.res-text');
 const countText = document.querySelector('.count-text');
-
 let throwTotal = 0;
 
-// 圖片對應
-const imgXiao = 'xiao.png';   // 笑杯
-const imgYin = 'yin.png';     // 陰杯
-const imgSheng1 = 'sheng1.png'; // 聖杯
-const imgSheng2 = 'sheng2.png'; // 聖杯
+// 直接使用你上傳的4個檔名，不改名
+const ZHENG_LEFT = "49478012378275330_user_upload_img_2";   // 左邊正
+const ZHENG_RIGHT = "49478012378275330_user_upload_img_4";  // 右邊正
+const FAN_LEFT = "49478012378275330_user_upload_img_3";      // 左邊反
+const FAN_RIGHT = "49478012378275330_user_upload_img_1";     // 右邊反
 
-// 隨機結果
-function randomResult(){
-  let n = Math.floor(Math.random() * 3);
-
-  if(n === 0){
-    return {
-      type: 'xiao',
-      name: '笑筊',
-      desc: '心意雜亂、稟述不清，請平靜心神，重新向遊巡王爺問事'
-    };
-  }
-
-  if(n === 1){
-    return {
-      type: 'yin',
-      name: '陰筊',
-      desc: '遊巡王爺不允，此事不宜進行，建議暫緩、換方式再稟問'
-    };
-  }
-
-  return {
-    type: 'sheng',
-    name: '聖筊',
-    desc: '遊巡王爺應允，心中所求可行，可安心執行計畫'
-  };
+function randomSide(){
+  return Math.floor(Math.random() * 2);
 }
 
-// 顯示對應圖片
-function showResult(result){
-  if(result.type === 'xiao'){
-    cup1Img.src = imgXiao;
-    cup2Img.src = imgXiao;
-  }
-
-  if(result.type === 'yin'){
-    cup1Img.src = imgYin;
-    cup2Img.src = imgYin;
-  }
-
-  if(result.type === 'sheng'){
-    if(Math.random() > 0.5){
-      cup1Img.src = imgSheng1;
-      cup2Img.src = imgSheng2;
-    }else{
-      cup1Img.src = imgSheng2;
-      cup2Img.src = imgSheng1;
+function getJiaoText(a,b){
+  if(a !== b){
+    return {
+      name:"聖筊",
+      desc:"遊巡王爺應允，心中所求可行，可安心執行計畫"
+    }
+  }else if(a === 1 && b === 1){
+    return {
+      name:"笑筊",
+      desc:"心意雜亂、稟述不清，請平靜心神，重新向遊巡王爺問事"
+    }
+  }else{
+    return {
+      name:"陰筊",
+      desc:"遊巡王爺不允，此事不宜進行，建議暫緩、換方式再稟問"
     }
   }
 }
 
-// 擲杯
+function refreshCupImg(leftSide, rightSide){
+  cupLeftImg.src = leftSide === 1 ? ZHENG_LEFT : FAN_LEFT;
+  cupRightImg.src = rightSide === 1 ? ZHENG_RIGHT : FAN_RIGHT;
+}
+
 function doThrow(){
   throwBtn.disabled = true;
   throwTotal++;
-
-  cup1.classList.add('throw-animate');
-  cup2.classList.add('throw-animate');
+  cupLeftBox.classList.add('throw-animate');
+  cupRightBox.classList.add('throw-animate');
 
   setTimeout(()=>{
-    let result = randomResult();
-
-    showResult(result);
-
-    resTitle.innerText = result.name;
-    resText.innerText = result.desc;
+    let leftNum = randomSide();
+    let rightNum = randomSide();
+    refreshCupImg(leftNum, rightNum);
+    let jiaoInfo = getJiaoText(leftNum, rightNum);
+    resTitle.innerText = jiaoInfo.name;
+    resText.innerText = jiaoInfo.desc;
     countText.innerText = `累計向遊巡王爺擲筊次數：${throwTotal}`;
 
-    cup1.classList.remove('throw-animate');
-    cup2.classList.remove('throw-animate');
+    cupLeftBox.classList.remove('throw-animate');
+    cupRightBox.classList.remove('throw-animate');
     throwBtn.disabled = false;
-  },700);
+  },700)
 }
 
-// 重置
 function resetAll(){
   throwTotal = 0;
-
-  cup1Img.src = imgXiao;
-  cup2Img.src = imgXiao;
-
-  resTitle.innerText = '等候向遊巡王爺擲筊';
-  resText.innerText = '';
-  countText.innerText = '';
+  refreshCupImg(1, 1);
+  resTitle.innerText = "等候向遊巡王爺擲筊";
+  resText.innerText = "";
+  countText.innerText = "";
 }
 
 throwBtn.addEventListener('click', doThrow);
 resetBtn.addEventListener('click', resetAll);
 </script>
-
 </body>
 </html>
