@@ -49,7 +49,10 @@ h1{
   height:100%;
   object-fit:contain;
   display:block;
+  /* 支援透明PNG，消除多餘白底渲染問題 */
+  background:transparent;
 }
+/* 3D翻轉拋擲動畫 */
 .throw-animate{
   animation:cupFlip 0.7s cubic-bezier(0.26,0.46,0.44,0.95);
 }
@@ -103,6 +106,7 @@ h1{
   color:#ffd266;
   font-size:17px;
 }
+/* 手機自適應 */
 @media(max-width:480px){
   h1{font-size:26px;letter-spacing:3px}
   .cup{width:110px;height:110px}
@@ -149,16 +153,18 @@ const resText = document.querySelector('.res-text');
 const countText = document.querySelector('.count-text');
 let throwTotal = 0;
 
-// 不刪檔、不改名，直接讀你現有檔名
+// 沿用你現有圖片檔名，完全不用修改圖片
 const ZHENG_LEFT = "zheng_left.png";
 const ZHENG_RIGHT = "zheng_right.png";
 const FAN_LEFT = "fan_left.png";
 const FAN_RIGHT = "fan_right.png";
 
+// 隨機 1=陽(無月牙正杯) 0=陰(帶月牙反杯)
 function randomSide(){
   return Math.floor(Math.random() * 2);
 }
 
+// 三種筊對應遊巡王爺解文
 function getJiaoText(a,b){
   if(a !== b){
     return {
@@ -178,11 +184,13 @@ function getJiaoText(a,b){
   }
 }
 
+// 切換左右筊杯圖片
 function refreshCupImg(leftSide, rightSide){
   cupLeftImg.src = leftSide === 1 ? ZHENG_LEFT : FAN_LEFT;
   cupRightImg.src = rightSide === 1 ? ZHENG_RIGHT : FAN_RIGHT;
 }
 
+// 擲筊翻轉動畫
 function doThrow(){
   throwBtn.disabled = true;
   throwTotal++;
@@ -204,6 +212,7 @@ function doThrow(){
   },700)
 }
 
+// 重置回初始兩個正杯畫面
 function resetAll(){
   throwTotal = 0;
   refreshCupImg(1, 1);
