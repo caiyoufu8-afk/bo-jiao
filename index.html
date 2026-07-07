@@ -117,10 +117,10 @@ h1{
 
 <div class="cup-wrap">
   <div id="cupLeftBox" class="cup">
-    <img id="cupLeftImg" src="49478012378275330_user_upload_img_2" alt="左邊正杯">
+    <img id="cupLeftImg" src="zheng_left.png" alt="左邊正杯">
   </div>
   <div id="cupRightBox" class="cup">
-    <img id="cupRightImg" src="49478012378275330_user_upload_img_4" alt="右邊正杯">
+    <img id="cupRightImg" src="zheng_right.png" alt="右邊正杯">
   </div>
 </div>
 
@@ -149,11 +149,11 @@ const resText = document.querySelector('.res-text');
 const countText = document.querySelector('.count-text');
 let throwTotal = 0;
 
-// 直接使用你上傳的4個檔名，不改名
-const ZHENG_LEFT = "49478012378275330_user_upload_img_2";   // 左邊正
-const ZHENG_RIGHT = "49478012378275330_user_upload_img_4";  // 右邊正
-const FAN_LEFT = "49478012378275330_user_upload_img_3";      // 左邊反
-const FAN_RIGHT = "49478012378275330_user_upload_img_1";     // 右邊反
+// 不刪檔、不改名，直接讀你現有檔名
+const ZHENG_LEFT = "zheng_left.png";
+const ZHENG_RIGHT = "zheng_right.png";
+const FAN_LEFT = "fan_left.png";
+const FAN_RIGHT = "fan_right.png";
 
 function randomSide(){
   return Math.floor(Math.random() * 2);
